@@ -6,6 +6,11 @@
 #   include <windows.h>
 #else
 #   include <dlfcn.h>
+#   if __APPLE__
+        const std::string lib_ext = ".dylib";
+#   else
+        const std::string lib_ext = ".so";
+#   endif
 #endif
 
 const std::string g_lib_name = "dfhack";
@@ -30,7 +35,7 @@ static void * open_library(const std::string &lib_name) {
 #if _WIN32
     return LoadLibrary((lib_name + ".dll").c_str());
 #else
-    return dlopen((lib_name + ".so").c_str(), RTLD_LAZY);
+    return dlopen((lib_name + lib_ext).c_str(), RTLD_LAZY);
 #endif
 }
 
