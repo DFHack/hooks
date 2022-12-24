@@ -1,4 +1,4 @@
-#include "DFHooks.h"
+#include "dfhooks.h"
 
 #include <string>
 
@@ -22,8 +22,8 @@ dfhack_init_fn g_dfhack_init = nullptr;
 typedef void (*dfhack_shutdown_fn)();
 dfhack_shutdown_fn g_dfhack_shutdown = nullptr;
 
-typedef void (*dfhack_tick_fn)();
-dfhack_tick_fn g_dfhack_tick = nullptr;
+typedef void (*dfhack_update_fn)();
+dfhack_update_fn g_dfhack_update = nullptr;
 
 typedef void (*dfhack_prerender_fn)();
 dfhack_prerender_fn g_dfhack_prerender = nullptr;
@@ -64,12 +64,12 @@ static void *load_sym(void *handle, const char *sym) {
 static void init_fns(void *handle) {
     g_dfhack_init = (dfhack_init_fn)load_sym(handle, "dfhack_init");
     g_dfhack_shutdown = (dfhack_shutdown_fn)load_sym(handle, "dfhack_shutdown");
-    g_dfhack_tick = (dfhack_tick_fn)load_sym(handle, "dfhack_tick");
+    g_dfhack_update = (dfhack_update_fn)load_sym(handle, "dfhack_update");
     g_dfhack_prerender = (dfhack_prerender_fn)load_sym(handle, "dfhack_prerender");
     g_dfhack_sdl_event = (dfhack_sdl_event_fn)load_sym(handle, "dfhack_sdl_event");
 }
 
-void hooks_init(void) {
+void hooks_init() {
     g_lib_handle = open_library(g_lib_name);
     init_fns(g_lib_handle);
 
@@ -77,7 +77,7 @@ void hooks_init(void) {
         g_dfhack_init();
 }
 
-void hooks_shutdown(void) {
+void hooks_shutdown() {
     if (g_dfhack_shutdown)
         g_dfhack_shutdown();
 
@@ -86,12 +86,12 @@ void hooks_shutdown(void) {
     g_lib_handle = nullptr;
 }
 
-void hooks_tick(void) {
-    if (g_dfhack_tick)
-        g_dfhack_tick();
+void hooks_update() {
+    if (g_dfhack_update)
+        g_dfhack_update();
 }
 
-void hooks_prerender(void) {
+void hooks_prerender() {
     if (g_dfhack_prerender)
         g_dfhack_prerender();
 }
