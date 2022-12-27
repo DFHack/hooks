@@ -22,5 +22,7 @@ void hooks_prerender();
 bool hooks_sdl_event(SDL::Event* event);
 
 // called for each utf-8 char read from the ncurses input
-// key is positive for ncurses keys and negative for everything else
+// key is positive for ncurses keys and negative for everything else.
+// If true is returned then the key has been consumed and further
+// processing shouldn't happen
 bool hooks_ncurses_key(int key);
